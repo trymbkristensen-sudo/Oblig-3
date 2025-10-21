@@ -1,8 +1,12 @@
 /**
- *  Skjelett/grunnlag for oblig nr 3 i GrProg, høsten 2025.
+ *  Programmering oblig 3 - Tic Tac Toe
+ * 
+ *  Printer spill brett, tar bruker input og
+ *  sjekker om bruker har tre på rad
  *
- * @file    Oblig3.tpl
- * @author  Malin Foss, William Eide Seiner & FrodeH
+ * @file    Oblig3.c
+ * @author  Trym Kristensen 
+ *          skjellet av (Malin Foss, William Eide Seiner & FrodeH)
  */
 
 
@@ -33,12 +37,13 @@ int main() {
     char nyttSpill;                  //  Kjøre programmet/spillet EN gang til.
 	int  vinner;                 //  Evt. spillernummer som har vunnet.
 
+    //Gjør hvert tomme element til mellomrom
     for (int i = 0; i < ANTRUTER; i++){
         if (gBrett[i] == '\0'){ 
             gBrett[i] = ' ';
         }
     } 
-
+    
     do  {
       nullstillBrett();
 
@@ -68,6 +73,7 @@ int main() {
  *  Nullstiller/blanker ut alle brettets ruter.
  */
 void nullstillBrett() {
+    //Går gjennom ANTRUTER og gjer til mellomrom
     for (int i = 0; i < ANTRUTER; i++)
     {
         gBrett[i] = ' ';
@@ -94,23 +100,25 @@ bool sjekkBrett(const int n) {
 /**
  *  Sjekker om noen har tre på rad i en eller annen retning.
  *
+ *  @param    spiller   - Tar impot "X" eller "O"
  *  @return   Om noen har tre på rad (true) eller ei (false) i noen retning
  */
-bool sjekkVinner(const int spiller) {   
-        if  (
-            (gBrett[0] == spiller && gBrett[1] == spiller && gBrett[2] == spiller) || // row 1
-            (gBrett[3] == spiller && gBrett[4] == spiller && gBrett[5] == spiller) || // row 2
-            (gBrett[6] == spiller && gBrett[7] == spiller && gBrett[8] == spiller) || // row 3
-            (gBrett[0] == spiller && gBrett[3] == spiller && gBrett[6] == spiller) || // col 1
-            (gBrett[1] == spiller && gBrett[4] == spiller && gBrett[7] == spiller) || // col 2
-            (gBrett[2] == spiller && gBrett[5] == spiller && gBrett[8] == spiller) || // col 3
-            (gBrett[0] == spiller && gBrett[4] == spiller && gBrett[8] == spiller) || // diag \.
-            (gBrett[2] == spiller && gBrett[4] == spiller && gBrett[6] == spiller)    // diag /
-            )
-            {
-                return true;
-            }
-    return false;
+bool sjekkVinner(const int spiller) {
+    //Sjekker om det er tre på rad
+    if  (
+        (gBrett[0] == spiller && gBrett[1] == spiller && gBrett[2] == spiller) || // row 1
+        (gBrett[3] == spiller && gBrett[4] == spiller && gBrett[5] == spiller) || // row 2
+        (gBrett[6] == spiller && gBrett[7] == spiller && gBrett[8] == spiller) || // row 3
+        (gBrett[0] == spiller && gBrett[3] == spiller && gBrett[6] == spiller) || // col 1
+        (gBrett[1] == spiller && gBrett[4] == spiller && gBrett[7] == spiller) || // col 2
+        (gBrett[2] == spiller && gBrett[5] == spiller && gBrett[8] == spiller) || // col 3
+        (gBrett[0] == spiller && gBrett[4] == spiller && gBrett[8] == spiller) || // diag \.
+        (gBrett[2] == spiller && gBrett[4] == spiller && gBrett[6] == spiller)    // diag /
+        )
+        {
+            return true;  //Om ja
+        }
+    return false;  //Om nei
 }
 
 
@@ -118,6 +126,7 @@ bool sjekkVinner(const int spiller) {
  *  Skriver ut spillebrettet.
  */
 void skrivBrett() {
+    //Enkel å simpel måte å printe ut brett
     printf("---1-----2-----3---\n");
     printf("|  %c  |  %c  |  %c  |\n", gBrett[0], gBrett[1], gBrett[2]);
     printf("---4-----5-----6---\n");
@@ -141,35 +150,38 @@ int spillSpillet() {
     int bps; //brikke plassering
     bool tur = true;
     int spiller;
-    
+
+    //Går for antal ruter i spill
     for (int i = 0; i < ANTRUTER; i++){
-    do{ 
-        if (tur){
-            spiller = 1;
-        }else{
-            spiller = 2;
-        }
-        printf("Spiller %i, ditt trekk(1-9): ", spiller);
-        scanf("%i", &bps);
-        if (sjekkBrett(bps)){
-            printf("%i er eit ugyldig tall\n", bps);
-        }
-    }while(sjekkBrett(bps)); 
-        if (tur){
-            gBrett[bps-1] = 'X';
-            tur = false;
-            skrivBrett();
-            if (sjekkVinner('X')){
+        do{  //Passer på at input er gyldig
+            if (tur){  //Deller opp hvem sin tur det er, X starter alltid
+                spiller = 1;
+            }else{
+                spiller = 2;
+            }
+            printf("Spiller %i, ditt trekk(1-9): ", spiller);
+            scanf("%i", &bps);
+            if (sjekkBrett(bps)){  //Printer ut om trekket er ugyldig
+                printf("%i er eit ugyldig tall\n", bps);
+            }
+        }while(sjekkBrett(bps)); 
+        
+        if (tur){  //if som gjør spillers trekk
+            gBrett[bps-1] = 'X';  //Plasserer tegn
+            tur = false;  //Gjør det til den andres tur
+            skrivBrett();  //Printer ut det oppdaterte brettet
+            if (sjekkVinner('X')){  //Sjekker om denne spiller har vunnet
                 return 1;
             }
         }else{
             gBrett[bps-1] = 'O';
             tur = true;
-                    skrivBrett();
+            skrivBrett();
             if (sjekkVinner('O')){
                 return 2;
             }
-        }
+            }
         printf("\n\n");
     }
+    return 0;  //Om ingen vinner
 }
